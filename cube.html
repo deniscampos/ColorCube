@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cube Color</title>
+	<link rel="stylesheet" href="style.css">
+
+	<script src="build/tracking-min.js"></script>
+
+	<script>
+		cont = 0;
+		sequencia = [];
+		timer = 0;
+
+		reconhecido = [];
+		ultimaCor = '';
+
+		function Sequencia(){
+			var cores = ['laranja', 'azul', 'vermelho', 'verde', 'amarelo'];
+			sequencia = [];
+
+			for(i = 0; i < 5; i++){
+				var sorteada = cores[(Math.floor(Math.random() * 5))];
+
+				sequencia.push(sorteada);
+			}
+			cont = 0;
+			Exibir();
+		}
+
+		function Exibir(){
+			document.getElementById('mostrar-sequencia').hidden = false;
+			if(cont < sequencia.length){
+				document.getElementById('color').className = sequencia[cont];
+				document.getElementById('numero').innerHTML = cont + 1;
+				cont++;
+
+				timer++;
+				if(timer <= 5){
+					t = setTimeout(function(){ Exibir() }, 1000);
+				} else {
+					document.getElementById('color').className = 'alpha';
+					document.getElementById('mostrar-sequencia').hidden = true;
+					cont = 0;
+				}
+
+			} else {
+				document.getElementById('color').className = 'alpha';
+				document.getElementById('mostrar-sequencia').hidden = true;
+				cont = 0;
+			}
+		}
+
+		function Timer(){
+			timer = 0;
+			Exibir();
+		}
+
+		function Close(){
+			timer = 6;
+			document.getElementById('mostrar-sequencia').hidden = true;
+		}
+	</script>
+</head>
+<body OnLoad="Close()">
+	<div class="title">
+		<p>Cube</p>
+	</div>
+
+	<div class="container">
+		<video id="video" width="600" height="450" preload autoplay loop muted></video>
+		<canvas id="canvas" width="600" height="450"></canvas>
+	</div>
+
+	<div id="mostrar-sequencia" class="show-color" onclick="Close();">
+		<canvas id="color" class="" width="250" height="250"></canvas>
+		<span id="numero" class="numero"></span>
+	</div>
+	
+	<aside>
+		<button OnClick="Start();">Start</button>
+
+		<button OnClick="Sequencia()">Sequencia</button>
+		<br><br>
+		<button OnClick="Timer()">Mostrar</button>
+
+	</aside>
+
+
+	<script>
+	function Start() {
+
+		tracking.ColorTracker.registerColor('amarelo', function(r, g, b) {
+			if (r > 210 && g > 200 && b < 115) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('green', function(r, g, b) {
+			if ((r < 80 && g > 125 && b < 80) || (r > 100 && r < 180 && (g - 50) > b  && b > 80 && g > 230) ) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('darkgreen', function(r, g, b) {
+			if (r < 30 && g < 70 && b < 30) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('red', function(r, g, b) {
+			if (r > 100 && g < 20 && b < 30) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('darkred', function(r, g, b) {
+			if (r < 135 && g < 30 && b < 30) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('orange', function(r, g, b) {
+			if (r > 150 && g < 75 && b < 75) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('blue', function(r, g, b) {
+			if (r < 30 && g < 30 && b > 30) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('black', function(r, g, b) {
+			if (r < 30 && g < 30 && b < 30) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('white', function(r, g, b) {
+			if (r > 220 && g > 220 && b > 220) {
+				return true;
+			}
+			return false;
+		});
+
+		var video = document.getElementById('video');
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+
+		//TESTE
+		var color = new tracking.ColorTracker(['yellow', 'orange', 'blue', 'red', 'green']);
+
+		// var color = new tracking.ColorTracker(['yellow', 'white', 'blue', 'green', 'red', 'dark-red', 'orange', 'black']);
+
+		tracking.track('#video', color, { camera: true });
+
+		color.on('track', function(event) {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+
+			
+			event.data.forEach(function(rect) {
+				context.strokeStyle = rect.color;
+				context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+				context.font = '11px Helvetica';
+				context.fillStyle = "#fff";
+				context.fillText('', rect.x + rect.width + 5, rect.y + 11);
+				context.fillText('', rect.x + rect.width + 5, rect.y + 22);
+				if(!(rect.color == ultimaCor)){
+					reconhecido.push(rect.color);
+					ultimaCor = rect.color;
+					alert(rect.color);
+					alert(reconhecido);
+				}
+
+			});
+		});
+
+	};
+	</script>
+</body>
+</html>
