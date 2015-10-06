@@ -97,6 +97,15 @@ aside {
   padding: 20px;
 }
 
+.texto {
+  max-width: 600px;
+  margin: 15px auto;
+}
+
+.lida {
+  text-align: center;
+}
+
 .numero {
   padding-top: 70px;
   text-align: center;
