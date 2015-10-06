@@ -16,7 +16,7 @@
 
 		function Sequencia(){
 			Zerar();
-			var cores = ['laranja', 'azul', 'vermelho', 'verde'];
+			var cores = ['orange', 'blue', 'red', 'green'];
 			sequencia = [];
 			reconhecido = [];
 
@@ -61,7 +61,7 @@
 		}
 
 		function Verificar(){
-				if(reconhecido[contRec] != "amarelo" && reconhecido[contRec] != sequencia[cont]){
+				if(reconhecido[contRec] != "yellow" && reconhecido[contRec] != sequencia[cont]){
 					alert("Você perdeu.");
 					document.getElementById("revelar").innerHTML = "Squência gerada: " + sequencia;
 
@@ -76,7 +76,7 @@
 
 					return false;
 					
-				} else if(reconhecido[contRec] != "amarelo"){
+				} else if(reconhecido[contRec] != "yellow"){
 					cont++;
 					contRec++;
 				}
@@ -121,20 +121,23 @@
 			alert("Primero você deve gerar a sequência.");
 			return false;
 		}
+
+		/*
 		tracking.ColorTracker.registerColor('amarelo', function(r, g, b) {
 			if (r > 130 && g > 160 && b < 95) {
 				return true;
 			}
 			return false;
-		});
+		}); */
 
-		tracking.ColorTracker.registerColor('verde', function(r, g, b) {
+		tracking.ColorTracker.registerColor('green', function(r, g, b) {
 			if ((r < 80 && g > 125 && b < 80) || (r > 100 && r < 180 && (g - 50) > b  && b > 80 && g > 230) ) {
 				return true;
 			}
 			return false;
 		});
 
+		
 		tracking.ColorTracker.registerColor('darkgreen', function(r, g, b) {
 			if (r < 30 && g < 70 && b < 30) {
 				return true;
@@ -142,13 +145,14 @@
 			return false;
 		});
 
-		tracking.ColorTracker.registerColor('vermelho', function(r, g, b) {
+		tracking.ColorTracker.registerColor('red', function(r, g, b) {
 			if (r > 100 && g < 20 && b < 30) {
 				return true;
 			}
 			return false;
 		});
 
+		
 		tracking.ColorTracker.registerColor('darkred', function(r, g, b) {
 			if (r < 135 && g < 30 && b < 30) {
 				return true;
@@ -156,20 +160,21 @@
 			return false;
 		});
 
-		tracking.ColorTracker.registerColor('laranja', function(r, g, b) {
+		tracking.ColorTracker.registerColor('orange', function(r, g, b) {
 			if (r > 150 && g < 75 && b < 75) {
 				return true;
 			}
 			return false;
 		});
 
-		tracking.ColorTracker.registerColor('azul', function(r, g, b) {
+		tracking.ColorTracker.registerColor('blue', function(r, g, b) {
 			if (r < 30 && g < 30 && b > 30) {
 				return true;
 			}
 			return false;
 		});
 
+		
 		tracking.ColorTracker.registerColor('black', function(r, g, b) {
 			if (r < 30 && g < 30 && b < 30) {
 				return true;
@@ -177,7 +182,8 @@
 			return false;
 		});
 
-		tracking.ColorTracker.registerColor('branco', function(r, g, b) {
+		
+		tracking.ColorTracker.registerColor('white', function(r, g, b) {
 			if (r > 150 && g > 150 && b > 150) {
 				return true;
 			}
@@ -190,26 +196,20 @@
 ;
 		
 		//Adiciona novar cores para serem rastreadas
-		var color = new tracking.ColorTracker(['amarelo', 'laranja', 'azul', 'vermelho', 'verde']);
-
+		var color = new tracking.ColorTracker(['yellow', 'orange', 'blue', 'red', 'green']);
 
 		tracking.track('#video', color, { camera: true });
 
 		color.on('track', function(event) {
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
-			
 			//Rect é um objeto retornaco quando uma cor é identidicada
 			event.data.forEach(function(rect) {
 				context.strokeStyle = rect.color;
 				context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-				context.font = '11px Helvetica';
-				context.fillStyle = "#fff";
-				context.fillText('', rect.x + rect.width + 5, rect.y + 11);
-				context.fillText('', rect.x + rect.width + 5, rect.y + 22);
 
 				//Caso a cor identificada não seja igual a última ele adiciona novamento no vetor
-				if(rect.color != ultimaCor && rect.color != "amarelo"){
+				if(rect.color != ultimaCor && rect.color != "yellow"){
 					reconhecido.push(rect.color);
 					document.getElementById("lida").innerHTML = reconhecido;
 					Verificar();					
