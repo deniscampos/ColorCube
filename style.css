@@ -50,8 +50,8 @@ video, canvas {
   position:absolute;
   top:50%;
   left:50%;
-  margin-top:-125px;
-  margin-left:-125px;
+  margin-top:-200px;
+  margin-left:-200px;
 }
 
 .show-color {
@@ -66,21 +66,27 @@ video, canvas {
 
 .yellow {
   background-color: #FFE000;
+  background-image: url("img/amarelo.png");
 }
 .red {
-  background-color: #FF0000;
+  /*background-color: #FF0000;*/
+  background-image: url("img/vermelho.png");
 }
 .blue {
-  background-color: #001BDE;
+  /*background-color: #001BDE;*/
+  background-image: url("img/azul.png");
 }
 .green {
-  background-color: #10D628;
+  /*background-color: #10D628;*/
+  background-image: url("img/verde.png");
 }
 .orange {
-  background-color: #FF7600;
+  /*background-color: #FF7600;*/
+  background-image: url("img/laranja.png");
 }
 .alpha {
-  background-color: none;
+  /*background-color: none;*/
+  background-image: url("img/off.png");
 }
 
 button {
