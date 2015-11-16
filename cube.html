@@ -40,6 +40,7 @@
 			vetorCoresReconhecidas = [];
 			ultimaCor = '';
 			timer = 0;
+			tempoEspera = 1000;
 			corReconhecida = 0;
 			corComparada = 0
 			numCores = 2;
@@ -66,10 +67,10 @@
 					document.getElementById('color').className = "alpha";
 					document.getElementById('numero').innerHTML = "";
 
-				} else { //Exibe a cor
+				} else { //Exibe a cor da sequência
 					document.getElementById('color').className = sequencia[cont];
 					document.getElementById('numero').innerHTML = cont + 1;
-					cont++;					
+					cont++;			
 				}
 
 				timer++;
@@ -82,13 +83,22 @@
 				document.getElementById('mostrar-sequencia').hidden = true;
 				document.getElementById('comecar').disabled = true;
 				cont = 0;
-				Start();
+
+				if(tempoEspera > 200){
+					tempoEspera = tempoEspera - 75; //Reduz o tempo de exibição das cores
+				}
+
+				Start(); //Inicia o jogo e a camera
 			}
+			
 		}
 
+
+		//Verificar se a cor exibida é a mesma da cor gerada.
 		function Verificar(){
 			if(vetorCoresReconhecidas[corReconhecida] != "yellow" && vetorCoresReconhecidas[corReconhecida] != sequencia[corComparada]){
 				alert("Você perdeu.");
+				document.getElementById("lida").innerHTML = "Cores lidas: " + vetorCoresReconhecidas;
 				document.getElementById("revelar").innerHTML = "Squência gerada: " + sequencia;				
 				document.getElementById("comecar").disabled = false;
 				document.getElementById("btnProximoNivel").disabled = true;
@@ -98,14 +108,12 @@
 
 			} else if(vetorCoresReconhecidas.length == sequencia.length){
 				numCores += 1;
-				pontuacao += sequencia.length; //Caso acerte todas, ganha mais a quantidade de cores do nível atual.
+				pontuacao += sequencia.length + 1; //Caso acerte todas, ganha mais a quantidade de cores do nível atual.
 				AtualizarPontuacao();
 				document.getElementById("btnProximoNivel").disabled = false;
 				tracking.track('#video').stop();
-				tempoEspera = tempoEspera - 150;
 
 				//alert("Parabéns, você Ganhou!");
-				
 				//return false;
 				
 			} else if(vetorCoresReconhecidas[corReconhecida] != "yellow"){
@@ -124,17 +132,21 @@
 </head>
 <body>
 	<div class="title">
-		<p>Cube</p>
+		<p>Color Cube</p>
 	</div>
 
 	<div class="topo">
-		<button OnClick="Sequencia()" id="comecar">Começar</button>
-		<button OnClick="ProximoNivel()" id="btnProximoNivel" disabled>Próximo Nível</button>
-		<br><br>
-
+		<span class="spanPontos">Pontos:</span>
 		<div class="pontuacao" id="pontuacao">
+
 			<span class="pontos" id="pontos">0</span>
 		</div>
+		<br>
+		<button OnClick="Sequencia()" id="comecar">Começar</button>
+		<button OnClick="ProximoNivel()" id="btnProximoNivel" disabled>Próximo Nível</button>
+		
+
+		
 
 		<div class="texto"><span id="revelar" class="gerada"></span></div>
 
@@ -143,8 +155,8 @@
 
 
 	<div class="container">
-		<video id="video" width="600" height="450" preload autoplay loop muted></video>
-		<canvas id="canvas" width="600" height="450"></canvas>
+		<video id="video" class="video" width="600" height="450" preload autoplay loop muted></video>
+		<canvas id="canvas" class="canvas" width="600" height="450"></canvas>
 	</div>
 
 	<div id="mostrar-sequencia" class="show-color" hidden>
@@ -170,13 +182,6 @@
 
 		tracking.ColorTracker.registerColor('green', function(r, g, b) {
 			if (r < 120 && g > 160 && b < 120 && b > 60) {
-				return true;
-			}
-			return false;
-		});
-		
-		tracking.ColorTracker.registerColor('darkgreen', function(r, g, b) {
-			if (r < 30 && g < 70 && b < 30) {
 				return true;
 			}
 			return false;
@@ -247,7 +252,6 @@
 				//Caso a cor identificada não seja igual a última ele adiciona novamento no vetor
 				if(rect.color != ultimaCor && rect.color != "yellow"){
 					vetorCoresReconhecidas.push(rect.color);
-					document.getElementById("lida").innerHTML = "Cores lidas: " + vetorCoresReconhecidas;
 					Verificar(); //Função que diz se acertou ou errou				
 				}
 				ultimaCor = rect.color;

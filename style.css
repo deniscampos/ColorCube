@@ -20,7 +20,7 @@
 .title p {
   color: #fff;
   text-align: center;
-  text-transform: lowercase;
+  /*text-transform: lowercase;*/
   font-size: 15px;
 }
 
@@ -38,14 +38,16 @@
   top: 50px !important;
 }
 
-video, canvas {
+.video, .canvas {
   position: absolute;
   /*top:50%;
   left:50%;
   margin-top: -225px;
   margin-left: -300px;*/
-  top: 60px;
-  right: 20px;
+  top: 330px;
+  margin: 0 auto;
+  border: 10px solid #ededed;
+  box-shadow: rgba(0,0,0,.1) 5px 5px 15px;
 }
 
 #color {
@@ -102,6 +104,7 @@ button {
   border-radius: 4px;
   color: #ffffff;
   cursor: pointer;
+  font-size: 13px;
 }
 
 button:disabled {
@@ -113,7 +116,8 @@ button:disabled {
 
 .topo {
   top: 40px;
-  padding: 20px;
+  padding: 10px;
+  text-align: center;
 }
 
 .texto {
@@ -121,6 +125,11 @@ button:disabled {
     font-family: Helvetica, Arial, sans-serif;
 }
 
+.spanPontos {
+    width: 100px;
+    text-align: center;
+    display: block;
+}
 .pontuacao {
     background: #ededed;
     width: 100px;
@@ -138,6 +147,10 @@ button:disabled {
     color: #0058A9;
 }
 
+.pontuacao, .spanPontos {
+    margin: 10px auto;
+}
+
 .lida, .gerada {
   display: block;
   margin: 10px 0; 
@@ -149,4 +162,13 @@ button:disabled {
   margin: 0 auto;
   display: block;
   font-size: 15pt;
+}
+
+@media (max-width: 900px) {
+  .video, .canvas {
+    top: 330px;
+    left: 20px;
+  }
+  
+
 }
