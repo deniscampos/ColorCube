@@ -9,97 +9,117 @@
 
 	<script>
 		cont = 0;
-		sequencia = [];
+		sequencia = []; //Sequência de cores geradas pelo jogo
 		timer = 0;
-		contRec = 0;
-		ultimaCor = '';
-		reconhecido = [];
+		corReconhecida = 0;
+		ultimaCor = ''; //última cor reconhecida
+		vetorCoresReconhecidas = []; //Cores reconhecidas pela camera
+		pontuacao = 0;
+		numCores = 2; //Número de cores que serão geradas
+		//cores = ['orange', 'blue', 'red', 'green']; //Cores que serão geradas
+		cores = ['blue', 'red', 'green', 'magenta']; //Cores que serão geradas
+		corComparada = 0
+		tempoEspera = 1000;
 
-		function Sequencia(){
+		function Sequencia(){ //Função que gera a sequencia de cores
 			Zerar();
-			var cores = ['orange', 'blue', 'red', 'green'];
 			sequencia = [];
-			reconhecido = [];
+			vetorCoresReconhecidas = [];
 
-			for(i = 0; i < 5; i++){
+			for(i = 0; i < numCores; i++){
 				var sorteada = cores[(Math.floor(Math.random() * 4))];
-
 				sequencia.push(sorteada);
 			}
-			cont = 0;
-			
 			timer = 0;
 			Exibir();
 		}
 
-		function Zerar() {
-			contRec = 0;
-			cont = 0;
-			reconhecido = [];
+		function ProximoNivel(){
+			var sorteada = cores[(Math.floor(Math.random() * 4))];
+			sequencia.push(sorteada);
+			vetorCoresReconhecidas = [];
+			ultimaCor = '';
+			timer = 0;
+			corReconhecida = 0;
+			corComparada = 0
+			numCores = 2;
+			Exibir();
+		}
+
+		function Zerar() { //Zera os contadores e o vetor das cores mostrada pelo jogador na rodada anterior.
+			corReconhecida = 0;
+			corComparada = 0
+			pontuacao = 0;
+			vetorCoresReconhecidas = [];
 			sequencia = [];
 			ultimaCor = '';
 			document.getElementById("lida").innerHTML = "";
 			document.getElementById("revelar").innerHTML = "";
+			document.getElementById("pontos").innerHTML = "0";
 		}
 
 		function Exibir(){
 			document.getElementById('mostrar-sequencia').hidden = false;
 			
 			if(cont < sequencia.length){
-				if(timer % 2 == 0){
+				if(timer % 2 == 0){ //Não exibe nenhuma cor
 					document.getElementById('color').className = "alpha";
 					document.getElementById('numero').innerHTML = "";
 
-					timer++;
-					if(timer <= 10){
-						t = setTimeout(function(){ Exibir() }, 1000);
-					}
-
-				} else {
+				} else { //Exibe a cor
 					document.getElementById('color').className = sequencia[cont];
 					document.getElementById('numero').innerHTML = cont + 1;
-					cont++;
+					cont++;					
+				}
 
-					timer++;
-					if(timer <= 10){
-						t = setTimeout(function(){ Exibir() }, 1000);
-					}
+				timer++;
+				if(timer <= sequencia.length * 2){
+					t = setTimeout(function(){ Exibir() }, tempoEspera);
 				}
 				
-
 			} else {
 				document.getElementById('color').className = 'alpha';
 				document.getElementById('mostrar-sequencia').hidden = true;
+				document.getElementById('comecar').disabled = true;
 				cont = 0;
+				Start();
 			}
 		}
 
 		function Verificar(){
-				if(reconhecido[contRec] != "yellow" && reconhecido[contRec] != sequencia[cont]){
-					alert("Você perdeu.");
-					document.getElementById("revelar").innerHTML = "Squência gerada: " + sequencia;
+			if(vetorCoresReconhecidas[corReconhecida] != "yellow" && vetorCoresReconhecidas[corReconhecida] != sequencia[corComparada]){
+				alert("Você perdeu.");
+				document.getElementById("revelar").innerHTML = "Squência gerada: " + sequencia;				
+				document.getElementById("comecar").disabled = false;
+				document.getElementById("btnProximoNivel").disabled = true;
+				tracking.track('#video').stop();
 
-					tracking.track('#video').stop();
+				return false;
 
-					return false;
+			} else if(vetorCoresReconhecidas.length == sequencia.length){
+				numCores += 1;
+				pontuacao += sequencia.length; //Caso acerte todas, ganha mais a quantidade de cores do nível atual.
+				AtualizarPontuacao();
+				document.getElementById("btnProximoNivel").disabled = false;
+				tracking.track('#video').stop();
+				tempoEspera = tempoEspera - 150;
 
-				} else if(reconhecido.length == sequencia.length){
-					alert("Parabéns, você Ganhou!");
-
-					tracking.track('#video').stop();
-
-					return false;
-					
-				} else if(reconhecido[contRec] != "yellow"){
-					cont++;
-					contRec++;
-				}
+				//alert("Parabéns, você Ganhou!");
+				
+				//return false;
+				
+			} else if(vetorCoresReconhecidas[corReconhecida] != "yellow"){
+				corComparada++;
+				corReconhecida++;
+				pontuacao++; //Ganha 1 ponto para cada cor certa
+				AtualizarPontuacao();
 			}
-
-		function Close(){
-			timer = 6;
-			document.getElementById('mostrar-sequencia').hidden = true;
 		}
+
+		function AtualizarPontuacao(){
+			document.getElementById("pontos").innerHTML = pontuacao; //Atualizar pontuacao
+		}
+
 	</script>
 </head>
 <body>
@@ -107,50 +127,53 @@
 		<p>Cube</p>
 	</div>
 
+	<div class="topo">
+		<button OnClick="Sequencia()" id="comecar">Começar</button>
+		<button OnClick="ProximoNivel()" id="btnProximoNivel" disabled>Próximo Nível</button>
+		<br><br>
+
+		<div class="pontuacao" id="pontuacao">
+			<span class="pontos" id="pontos">0</span>
+		</div>
+
+		<div class="texto"><span id="revelar" class="gerada"></span></div>
+
+		<div class="texto"><span id="lida" class="lida"></span></div>
+	</div>
+
+
 	<div class="container">
 		<video id="video" width="600" height="450" preload autoplay loop muted></video>
 		<canvas id="canvas" width="600" height="450"></canvas>
 	</div>
 
-	<div id="mostrar-sequencia" class="show-color" onclick="Close();" hidden>
-		<canvas id="color" class="" width="400" height="400"></canvas>
+	<div id="mostrar-sequencia" class="show-color" hidden>
+		<canvas id="color" class="" width="200" height="200"></canvas>
 		<span id="numero" class="numero"></span>
 	</div>
-
-	<div class="texto"><span id="lida" class="lida"></span></div>
-
-	<div class="texto"><span id="revelar" class="lida"></span></div>
 	
-	<aside>
-		<button OnClick="Start();">Start</button>
-
-		<button OnClick="Sequencia()">Sequencia</button>
-
-	</aside>
-
+	
 
 	<script>
 	function Start() {
-		if(sequencia.length == -1){
+		if(sequencia.length == 0){
 			alert("Primero você deve gerar a sequência.");
 			return false;
 		}
 
-		/*
-		tracking.ColorTracker.registerColor('amarelo', function(r, g, b) {
-			if (r > 130 && g > 160 && b < 95) {
-				return true;
-			}
-			return false;
-		}); */
-
-		tracking.ColorTracker.registerColor('green', function(r, g, b) {
-			if (r < 70 && g > 100 && b < 85) {
+		tracking.ColorTracker.registerColor('yellow', function(r, g, b) {
+			if (r > 140 && g > 120 && g < 240 && g < r  && b < g && b > 30 && b < 125) {
 				return true;
 			}
 			return false;
 		});
 
+		tracking.ColorTracker.registerColor('green', function(r, g, b) {
+			if (r < 120 && g > 160 && b < 120 && b > 60) {
+				return true;
+			}
+			return false;
+		});
 		
 		tracking.ColorTracker.registerColor('darkgreen', function(r, g, b) {
 			if (r < 30 && g < 70 && b < 30) {
@@ -166,14 +189,6 @@
 			return false;
 		});
 
-		
-		tracking.ColorTracker.registerColor('darkred', function(r, g, b) {
-			if (r < 135 && g < 30 && b < 30) {
-				return true;
-			}
-			return false;
-		});
-
 		tracking.ColorTracker.registerColor('orange', function(r, g, b) {
 			if (r > 170 && g < 165 && g > 60 && b < 50) {
 				return true;
@@ -182,7 +197,14 @@
 		});
 
 		tracking.ColorTracker.registerColor('blue', function(r, g, b) {
-			if (r < 30 && g < 90 && b > 100) {
+			if (r < 30 && g < 90 && b > 70) {
+				return true;
+			}
+			return false;
+		});
+
+		tracking.ColorTracker.registerColor('magenta', function(r, g, b) {
+			if (r > 130 && g < 75 && b < 150 && b > 80) {
 				return true;
 			}
 			return false;
@@ -207,26 +229,26 @@
 		var video = document.getElementById('video');
 		var canvas = document.getElementById('canvas');
 		var context = canvas.getContext('2d');
-;
+
 		
 		//Adiciona novar cores para serem rastreadas
-		var color = new tracking.ColorTracker(['yellow', 'orange', 'blue', 'red', 'green']);
+		var color = new tracking.ColorTracker(['yellow', 'blue', 'red', 'green', 'magenta']);
 
 		tracking.track('#video', color, { camera: true });
 
 		color.on('track', function(event) {
 			context.clearRect(0, 0, canvas.width, canvas.height);
 
-			//Rect é um objeto retornaco quando uma cor é identidicada
+			//Rect é um objeto retornado quando uma cor é identidicada
 			event.data.forEach(function(rect) {
 				context.strokeStyle = rect.color;
 				context.strokeRect(rect.x, rect.y, rect.width, rect.height);
 
 				//Caso a cor identificada não seja igual a última ele adiciona novamento no vetor
 				if(rect.color != ultimaCor && rect.color != "yellow"){
-					reconhecido.push(rect.color);
-					document.getElementById("lida").innerHTML = reconhecido;
-					Verificar();					
+					vetorCoresReconhecidas.push(rect.color);
+					document.getElementById("lida").innerHTML = "Cores lidas: " + vetorCoresReconhecidas;
+					Verificar(); //Função que diz se acertou ou errou				
 				}
 				ultimaCor = rect.color;
 
