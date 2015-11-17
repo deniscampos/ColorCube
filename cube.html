@@ -40,7 +40,6 @@
 			vetorCoresReconhecidas = [];
 			ultimaCor = '';
 			timer = 0;
-			tempoEspera = 1000;
 			corReconhecida = 0;
 			corComparada = 0
 			numCores = 2;
@@ -51,6 +50,7 @@
 			corReconhecida = 0;
 			corComparada = 0
 			pontuacao = 0;
+			tempoEspera = 1000;
 			vetorCoresReconhecidas = [];
 			sequencia = [];
 			ultimaCor = '';
@@ -84,10 +84,9 @@
 				document.getElementById('comecar').disabled = true;
 				cont = 0;
 
-				if(tempoEspera > 200){
-					tempoEspera = tempoEspera - 75; //Reduz o tempo de exibição das cores
+				if(tempoEspera > 100){
+					tempoEspera = tempoEspera - 100; //Reduz o tempo de exibição das cores
 				}
-
 				Start(); //Inicia o jogo e a camera
 			}
 			
