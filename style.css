@@ -77,11 +77,11 @@
   /*background-image: url("img/vermelho.png");*/
 }
 .blue {
-  background-color: #001BDE;
+  background-color: #004BDE;
   /*background-image: url("img/azul.png");*/
 }
 .green {
-  background-color: #10D628;
+  background-color: #14C72A;
   /*background-image: url("img/verde.png");*/
 }
 .orange {
@@ -89,8 +89,13 @@
   /*background-image: url("img/laranja.png");*/
 }
 .magenta {
-  background-color: #FF00FF;
+  background-color: #F300D1;
   /*background-image: url("img/laranja.png");*/ 
+}
+
+.purple {
+  background-color: #6D09D4;
+  /*background-image: url("img/purple.png");*/ 
 }
 .alpha {
   background-color: none;
